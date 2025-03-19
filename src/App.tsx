@@ -87,9 +87,8 @@ function App() {
   return (
     <div className="flex flex-col h-screen bg-black">
       <header className="p-4 flex items-center justify-between border-b border-zinc-800">
-        <div className="flex items-center gap-2">
-          <img src={logo} alt="Your Own AI" className="w-8 h-8" />
-          <span className="text-white text-xl font-semibold">Your Own AI</span>
+        <div className="flex items-center">
+          <img src={logo} alt="AI Logo" className="w-full h-8" />
         </div>
         <button
           onClick={handleNewQuestion}
@@ -106,9 +105,8 @@ function App() {
       >
         {messages.length === 0 ? (
           <div className="h-full flex flex-col items-center justify-center">
-            <div className="flex items-center gap-2 mb-8">
-              <img src={logo} alt="Your Own AI" className="w-16 h-16" />
-              <h1 className="text-white text-3xl font-bold">Your Own AI</h1>
+            <div className="mb-8">
+              <img src={logo} alt="AI Logo" className="w-full h-16" />
             </div>
             <form onSubmit={handleSubmit} className="w-full max-w-4xl px-4">
               <div className="relative">
