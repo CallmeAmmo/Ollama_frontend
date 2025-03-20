@@ -1,7 +1,7 @@
-const OLLAMA_ENDPOINT = 'http://127.0.0.1:11434/api/generate';
+const OLLAMA_ENDPOINT = 'http://127.0.0.1:11434/api/chat';
 
 export async function streamResponse(
-  prompt: string, 
+  messages: ChatMessage[],
   onUpdate: (data: StreamResponse) => void,
   signal?: AbortSignal
 ) {
@@ -13,7 +13,7 @@ export async function streamResponse(
       },
       body: JSON.stringify({
         model: 'deepseek-r1:1.5b',
-        prompt,
+        messages,
         stream: true,
         options: {
           temperature: 0.7,
@@ -38,8 +38,8 @@ export async function streamResponse(
       for (const line of lines) {
         const data = JSON.parse(line);
         
-        if (data.response) {
-          currentMessage += data.response;
+        if (data.message?.content) {
+          currentMessage += data.message.content;
         }
         
         if (data.context?.includes('<think>')) {

@@ -9,3 +9,8 @@ export interface StreamResponse {
   thinking?: string;
   done: boolean;
 }
+
+export interface ChatMessage {
+  role: 'user' | 'assistant';
+  content: string;
+}

@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Message } from './types';
+import { Message, ChatMessage } from './types';
 import { streamResponse } from './api';
-import { ChatMessage } from './components/ChatMessage';
+import { ChatMessage as ChatMessageComponent } from './components/ChatMessage';
 import { Send, HelpCircle, Square } from 'lucide-react';
 import logo from './assets/logo.svg';
 
@@ -59,7 +59,13 @@ function App() {
 
       setMessages(prev => [...prev, assistantMessage]);
 
-      await streamResponse(input.trim(), (update) => {
+      // Convert messages to ChatMessage format for API
+      const chatMessages: ChatMessage[] = messages.concat(userMessage).map(msg => ({
+        role: msg.role,
+        content: msg.content
+      }));
+
+      await streamResponse(chatMessages, (update) => {
         setMessages(prev => {
           const newMessages = [...prev];
           const lastMessage = newMessages[newMessages.length - 1];
@@ -132,7 +138,7 @@ function App() {
         ) : (
           <div className="max-w-4xl mx-auto w-full space-y-4">
             {messages.map((message, index) => (
-              <ChatMessage key={index} message={message} />
+              <ChatMessageComponent key={index} message={message} />
             ))}
             <div ref={messagesEndRef} />
           </div>
