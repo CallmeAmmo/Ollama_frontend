@@ -13,10 +13,16 @@ const ThinkDropdown: React.FC<{ children: React.ReactNode }> = ({ children }) =>
     <div className="think-dropdown my-2">
       <button
         onClick={() => setOpen(prev => !prev)}
-        className="text-sm text-white bg-zinc-700 px-3 py-1 rounded-full hover:bg-zinc-600 transition-colors"
+        className="text-sm text-white bg-zinc-700 px-3 py-3 rounded-full hover:bg-zinc-600 transition-colors w-full flex justify-between items-center"
       >
-        {open ? '🧠 Hide Thoughts' : '🧠 Show Thoughts'}
+        <span className="flex items-center gap-1">
+          <Brain size={20} /> Thinking
+        </span>
+        <span className="bg-white text-black px-3 py-1 rounded-full">
+          {open ? 'Hide Thoughts' : 'Show Thoughts'}
+        </span>
       </button>
+
       {open && (
         <div className="think-content mt-2 bg-zinc-800 p-4 rounded-lg text-white">
           {children}
