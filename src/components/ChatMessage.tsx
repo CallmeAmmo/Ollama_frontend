@@ -72,7 +72,7 @@ export function ChatMessage({ message }: ChatMessageProps) {
   if (message.role === 'user') {
     return (
       <div className="flex justify-end mb-4">
-        <div className="bg-zinc-700 text-white rounded-lg py-2 px-4 max-w-[80%]">
+        <div className="bg-zinc-700 text-white rounded-full py-2 px-4 max-w-[80%]">
           {message.content}
         </div>
       </div>
