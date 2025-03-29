@@ -9,6 +9,11 @@ interface ChatMessageProps {
 const ThinkDropdown: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [open, setOpen] = useState(false);
 
+  // Don't render if there's no content
+  if (!children || (typeof children === 'string' && children.trim() === '')) {
+    return null;
+  }
+
   return (
     <div className="think-dropdown my-2">
       <button
@@ -51,22 +56,22 @@ export function ChatMessage({ message }: ChatMessageProps) {
     const blocks: Array<{ content: string; closed: boolean }> = [];
     let lastClosingIndex = -1;
 
-    // Find all think blocks (both closed and open)
     const regex = /<think>([\s\S]*?)<\/think>|<think>([\s\S]*)/gi;
     let match;
     
     while ((match = regex.exec(content)) !== null) {
-      if (match[1]) { // Closed think block
+      const content = match[1] || match[2];
+      const trimmedContent = content?.trim() || '';
+      
+      if (trimmedContent) { // Only add if there's actual content
         blocks.push({
-          content: match[1].trim(),
-          closed: true
+          content: trimmedContent,
+          closed: !!match[1]
         });
+      }
+      
+      if (match[1]) {
         lastClosingIndex = regex.lastIndex;
-      } else if (match[2]) { // Open think block
-        blocks.push({
-          content: match[2].trim(),
-          closed: false
-        });
       }
     }
 

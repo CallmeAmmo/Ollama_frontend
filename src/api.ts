@@ -12,7 +12,7 @@ export async function streamResponse(
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'deepseek-r1:1.5b',
+        model: 'deepseek-r1:8b',
         messages,
         stream: true,
         options: {

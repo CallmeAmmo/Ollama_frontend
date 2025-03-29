@@ -16,7 +16,7 @@ A lightweight frontend for Ollama's DeepSeek models, featuring real-time streami
 2. Install Ollama from https://ollama.ai/
 3. Open PowerShell and pull the DeepSeek model:
    ```powershell
-   ollama pull deepseek-r1:1.5b
+   ollama pull deepseek-r1:8b
    ```
 4. Clone this repository
 5. Navigate to the project directory
@@ -42,7 +42,7 @@ A lightweight frontend for Ollama's DeepSeek models, featuring real-time streami
    ```
 3. Pull the DeepSeek model:
    ```bash
-   ollama pull deepseek-r1:1.5b
+   ollama pull deepseek-r1:8b
    ```
 4. Clone this repository
 5. Navigate to the project directory
