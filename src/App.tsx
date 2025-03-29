@@ -130,7 +130,7 @@ function App() {
                     type="button"
                     className="text-zinc-400 hover:text-white transition-colors"
                   >
-                    <HelpCircle size={20} />
+                  <HelpCircle size={24} className="text-black bg-white rounded-full "/>
                   </button>
                 </div>
               </div>
