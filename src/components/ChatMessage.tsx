@@ -9,39 +9,44 @@ interface ChatMessageProps {
 const ThinkDropdown: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [open, setOpen] = useState(false);
 
-  // Don't render if there's no content
   if (!children || (typeof children === 'string' && children.trim() === '')) {
     return null;
   }
 
   return (
-    <div className="think-dropdown my-2">
+    <div className="think-dropdown my-2 bg-zinc-800 rounded-lg transition-all">
       <button
         onClick={() => setOpen(prev => !prev)}
-        className="text-sm text-white bg-zinc-700 px-3 py-1.5 rounded-lg hover:bg-zinc-600 transition-colors w-full flex justify-between items-center"
+        className="text-sm text-white px-4 py-3 w-full flex justify-between items-center hover:bg-zinc-700/20 rounded-lg"
         aria-expanded={open}
       >
         <span className="flex items-center gap-1.5">
-          <Brain size={18} aria-hidden="true" />
+          <Brain size={20} aria-hidden="true" />
           Thinking
         </span>
-        <span className="bg-white/90 text-zinc-800 px-2.5 py-0.5 rounded-md text-sm">
-          {open ? 'Hide' : 'Show'}
+        <span className="bg-white/90 text-zinc-800 px-2.5 py-1 rounded-md text-sm">
+          {open ? 'Hide Thoughts' : 'Show Thoughts'}
         </span>
       </button>
 
       {open && (
         <div 
-          className="think-content mt-2 bg-zinc-800 p-4 rounded-lg text-white/90 whitespace-pre-wrap text-sm"
+          className="px-4 pb-4 -mt-2 text-white/90 whitespace-pre-wrap text-sm"
           role="region"
           aria-live="polite"
         >
-          {children}
+          <div className="pt-2">
+            {children}
+          </div>
         </div>
       )}
     </div>
   );
 };
+
+
+
+
 
 export function ChatMessage({ message }: ChatMessageProps) {
   const [thinkBlocks, setThinkBlocks] = useState<Array<{ content: string; closed: boolean }>>([]);
@@ -102,7 +107,7 @@ export function ChatMessage({ message }: ChatMessageProps) {
   if (message.role === 'user') {
     return (
       <div className="flex justify-end mb-4">
-        <div className="bg-blue-600/90 text-white rounded-lg py-2.5 px-4 max-w-[85%]">
+        <div className="bg-zinc-500/90 text-white mt-4 rounded-lg py-2.5 px-4 max-w-[85%]">
           {message.content}
         </div>
       </div>
@@ -110,12 +115,12 @@ export function ChatMessage({ message }: ChatMessageProps) {
   }
 
   return (
-    <div className="space-y-3 mb-4">
+    <div className="space-y-4 mb-4">
       {/* Thinking indicator */}
       {message.thinking && (
         <div className="bg-zinc-800/80 rounded-lg p-3 text-sm text-white/80">
           <div className="flex items-center gap-2">
-            <Brain className="animate-spin" size={16} />
+            <Brain size={16} />
             Generating response...
           </div>
         </div>
@@ -132,7 +137,7 @@ export function ChatMessage({ message }: ChatMessageProps) {
           className="bg-zinc-800/80 p-3 rounded-lg mb-2 text-sm text-white/80"
         >
           <div className="flex items-center gap-2 mb-1.5">
-            <Brain size={16} />
+            <Brain size={20} />
             <span>Thinking</span>
           </div>
           {block.content}
@@ -141,10 +146,13 @@ export function ChatMessage({ message }: ChatMessageProps) {
 
       {/* Streamed final text */}
       {finalText.length > 0 && (
-        <div className="text-white/90 whitespace-pre-wrap">
-          {finalText.slice(0, displayedFinalLength)}
+        <div className="text-white/90 whitespace-pre-wrap ">
+          {/* {finalText.slice(0, displayedFinalLength)} */}
+          {finalText.trim().slice(0, displayedFinalLength)}
         </div>
       )}
     </div>
   );
 }
+
+ 
