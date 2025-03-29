@@ -92,7 +92,7 @@ function App() {
 
   return (
     <div className="flex flex-col h-screen bg-black">
-      <header className="p-4 flex items-center justify-between border-b border-zinc-800">
+      <header className="p-4 flex items-center justify-between">
         <div className="flex items-center">
           <img src={logo} alt="AI Logo" className="w-full h-8" />
         </div>
@@ -100,7 +100,8 @@ function App() {
           onClick={handleNewQuestion}
           className="flex items-center gap-2 px-4 py-2 bg-zinc-800 rounded-lg text-white hover:bg-zinc-700 transition-colors"
         >
-          <HelpCircle size={20} />
+          {/* <HelpCircle size={20} /> */}
+          <HelpCircle size={24} className="text-black bg-white rounded-full "/>
           <span>New Question</span>
         </button>
       </header>
@@ -146,7 +147,7 @@ function App() {
       </main>
 
       {messages.length > 0 && (
-        <div className="border-t border-zinc-800 p-4">
+        <div className="p-4">
           <form onSubmit={handleSubmit} className="max-w-4xl mx-auto">
             <div className="relative">
               <input
@@ -171,7 +172,7 @@ function App() {
                     type="button"
                     className="text-zinc-400 hover:text-white transition-colors"
                   >
-                    <HelpCircle size={20} />
+                    <HelpCircle size={24} className="text-black bg-white rounded-full "/>
                   </button>
                 )}
               </div>
