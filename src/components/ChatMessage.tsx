@@ -18,7 +18,7 @@ const ThinkDropdown: React.FC<{ children: React.ReactNode }> = ({ children }) =>
       >
         <span className="flex items-center gap-1.5">
           <Brain size={18} aria-hidden="true" />
-          Thinking Process
+          Thinking
         </span>
         <span className="bg-white/90 text-zinc-800 px-2.5 py-0.5 rounded-md text-sm">
           {open ? 'Hide' : 'Show'}
@@ -39,68 +39,60 @@ const ThinkDropdown: React.FC<{ children: React.ReactNode }> = ({ children }) =>
 };
 
 export function ChatMessage({ message }: ChatMessageProps) {
-  const [parsedContent, setParsedContent] = useState<Array<React.ReactNode>>([]);
-  const [processedThinkBlocks, setProcessedThinkBlocks] = useState<Set<number>>(new Set());
+  const [thinkBlocks, setThinkBlocks] = useState<Array<{ content: string; closed: boolean }>>([]);
+  const [finalText, setFinalText] = useState('');
+  const [displayedFinalLength, setDisplayedFinalLength] = useState(0);
 
-  // Parse content into think blocks and regular text
-  const parseContent = (content: string) => {
-    const parts: React.ReactNode[] = [];
-    const regex = /(<think>[\s\S]*?<\/think>)|(<think>[\s\S]*)/gi;
-    let lastIndex = 0;
-    let counter = 0;
-
-    content.split(regex).forEach((segment, index) => {
-      if (!segment) return;
-      
-      if (segment.toLowerCase().startsWith('<think>')) {
-        const isClosed = segment.toLowerCase().includes('</think>');
-        const content = segment
-          .replace(/<\/?think>/gi, '')
-          .trim();
-
-        if (isClosed) {
-          parts.push(
-            <ThinkDropdown key={`think-${index}`}>
-              {content}
-            </ThinkDropdown>
-          );
-        } else {
-          parts.push(
-            <div 
-              key={`streaming-think-${index}`}
-              className="bg-zinc-800/80 p-3 rounded-lg mb-2 animate-pulse-fast text-sm text-white/80"
-            >
-              <div className="flex items-center gap-2 mb-1.5">
-                <Brain className="animate-spin" size={16} />
-                <span>Thinking</span>
-              </div>
-              {content}
-            </div>
-          );
-        }
-        lastIndex = index + 1;
-        counter++;
-      } else if (index === lastIndex) {
-        parts.push(
-          <span 
-            key={`text-${index}`}
-            className="text-white/90 whitespace-pre-wrap"
-          >
-            {segment}
-          </span>
-        );
-      }
-    });
-
-    return parts;
-  };
-
+  // Parse content into think blocks and final text
   useEffect(() => {
-    if (message.content) {
-      const parsed = parseContent(message.content);
-      setParsedContent(parsed);
+    if (!message.content) return;
+
+    const content = message.content;
+    const blocks: Array<{ content: string; closed: boolean }> = [];
+    let lastClosingIndex = -1;
+
+    // Find all think blocks (both closed and open)
+    const regex = /<think>([\s\S]*?)<\/think>|<think>([\s\S]*)/gi;
+    let match;
+    
+    while ((match = regex.exec(content)) !== null) {
+      if (match[1]) { // Closed think block
+        blocks.push({
+          content: match[1].trim(),
+          closed: true
+        });
+        lastClosingIndex = regex.lastIndex;
+      } else if (match[2]) { // Open think block
+        blocks.push({
+          content: match[2].trim(),
+          closed: false
+        });
+      }
     }
+
+    // Extract final text after last </think>
+    const final = lastClosingIndex !== -1 ? content.slice(lastClosingIndex) : '';
+    
+    setThinkBlocks(blocks);
+    setFinalText(final);
   }, [message.content]);
+
+  // Handle final text streaming
+  useEffect(() => {
+    if (finalText.length === 0 || displayedFinalLength >= finalText.length) return;
+
+    const interval = setInterval(() => {
+      setDisplayedFinalLength(prev => {
+        if (prev >= finalText.length) {
+          clearInterval(interval);
+          return prev;
+        }
+        return prev + 1;
+      });
+    }, 20);
+
+    return () => clearInterval(interval);
+  }, [finalText, displayedFinalLength]);
 
   if (message.role === 'user') {
     return (
@@ -114,6 +106,7 @@ export function ChatMessage({ message }: ChatMessageProps) {
 
   return (
     <div className="space-y-3 mb-4">
+      {/* Thinking indicator */}
       {message.thinking && (
         <div className="bg-zinc-800/80 rounded-lg p-3 text-sm text-white/80">
           <div className="flex items-center gap-2">
@@ -123,11 +116,30 @@ export function ChatMessage({ message }: ChatMessageProps) {
         </div>
       )}
 
-      <div className="text-white/90 whitespace-pre-wrap">
-        {parsedContent}
-      </div>
+      {/* Processed think blocks */}
+      {thinkBlocks.map((block, index) => block.closed ? (
+        <ThinkDropdown key={`think-${index}`}>
+          {block.content}
+        </ThinkDropdown>
+      ) : (
+        <div 
+          key={`streaming-think-${index}`}
+          className="bg-zinc-800/80 p-3 rounded-lg mb-2 text-sm text-white/80"
+        >
+          <div className="flex items-center gap-2 mb-1.5">
+            <Brain size={16} />
+            <span>Thinking</span>
+          </div>
+          {block.content}
+        </div>
+      ))}
+
+      {/* Streamed final text */}
+      {finalText.length > 0 && (
+        <div className="text-white/90 whitespace-pre-wrap">
+          {finalText.slice(0, displayedFinalLength)}
+        </div>
+      )}
     </div>
   );
 }
-
-
