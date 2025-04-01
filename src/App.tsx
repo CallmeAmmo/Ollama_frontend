@@ -14,17 +14,24 @@ function App() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const mainRef = useRef<HTMLDivElement>(null);
 
-  const scrollToBottom = () => {
-    if (!isStreaming) {
-      messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-    }
+  const scrollToBottom = (behavior: ScrollBehavior = 'smooth') => {
+    messagesEndRef.current?.scrollIntoView({ behavior, block: 'end' });
   };
 
+  // Auto-scroll when messages change or during streaming
   useEffect(() => {
-    if (!isStreaming) {
-      scrollToBottom();
+    scrollToBottom('smooth');
+  }, [messages]);
+
+  // Additional scroll effect for streaming updates
+  useEffect(() => {
+    if (isStreaming) {
+      const interval = setInterval(() => {
+        scrollToBottom('smooth');
+      }, 100);
+      return () => clearInterval(interval);
     }
-  }, [messages, isStreaming]);
+  }, [isStreaming]);
 
   const handleNewQuestion = () => {
     if (abortController) {
@@ -101,7 +108,6 @@ function App() {
       setIsLoading(false);
       setIsStreaming(false);
       setAbortController(null);
-      scrollToBottom();
     }
   };
 
