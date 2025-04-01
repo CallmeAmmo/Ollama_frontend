@@ -10,16 +10,21 @@ function App() {
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [abortController, setAbortController] = useState<AbortController | null>(null);
+  const [isStreaming, setIsStreaming] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const mainRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    if (!isStreaming) {
+      messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }
   };
 
   useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
+    if (!isStreaming) {
+      scrollToBottom();
+    }
+  }, [messages, isStreaming]);
 
   const handleNewQuestion = () => {
     if (abortController) {
@@ -28,6 +33,7 @@ function App() {
     setMessages([]);
     setInput('');
     setIsLoading(false);
+    setIsStreaming(false);
     setAbortController(null);
   };
 
@@ -35,6 +41,7 @@ function App() {
     if (abortController) {
       abortController.abort();
       setIsLoading(false);
+      setIsStreaming(false);
       setAbortController(null);
     }
   };
@@ -45,6 +52,7 @@ function App() {
 
     const controller = new AbortController();
     setAbortController(controller);
+    setIsStreaming(true);
 
     const userMessage: Message = {
       role: 'user',
@@ -91,7 +99,9 @@ function App() {
       }
     } finally {
       setIsLoading(false);
+      setIsStreaming(false);
       setAbortController(null);
+      scrollToBottom();
     }
   };
 
@@ -112,7 +122,7 @@ function App() {
 
       <main 
         ref={mainRef}
-        className="flex-1 overflow-y-auto p-4"
+        className="flex-1 overflow-y-auto p-4 scroll-smooth"
       >
         {messages.length === 0 ? (
           <div className="h-full flex flex-col items-center justify-center">
