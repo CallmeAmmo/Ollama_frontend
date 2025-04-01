@@ -6,14 +6,14 @@ A lightweight frontend for Ollama's DeepSeek models, featuring real-time streami
 
 - Node.js (v18 or later)
 - Ollama installed and running locally
-- DeepSeek model pulled in Ollama
+- DeepSeek R1 model pulled in Ollama
 
 ## Setup Instructions
 
 ### Windows
 
 1. Install Node.js from https://nodejs.org/
-2. Install Ollama from https://ollama.ai/
+2. Install Ollama from https://ollama.com/
 3. Open PowerShell and pull the DeepSeek model:
    ```powershell
    ollama pull deepseek-r1:8b
