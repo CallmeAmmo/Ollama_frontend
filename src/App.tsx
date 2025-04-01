@@ -22,8 +22,13 @@ function App() {
   }, [messages]);
 
   const handleNewQuestion = () => {
+    if (abortController) {
+      abortController.abort();
+    }
     setMessages([]);
     setInput('');
+    setIsLoading(false);
+    setAbortController(null);
   };
 
   const handleStop = () => {
@@ -100,8 +105,7 @@ function App() {
           onClick={handleNewQuestion}
           className="flex items-center gap-2 px-4 py-2 bg-zinc-800 rounded-lg text-white hover:bg-zinc-700 transition-colors"
         >
-          {/* <HelpCircle size={20} /> */}
-          <HelpCircle size={24} className="text-black bg-white rounded-full "/>
+          <HelpCircle size={24} className="text-black bg-white rounded-full" />
           <span>New Question</span>
         </button>
       </header>
@@ -130,7 +134,7 @@ function App() {
                     type="button"
                     className="text-zinc-400 hover:text-white transition-colors"
                   >
-                  <HelpCircle size={24} className="text-black bg-white rounded-full "/>
+                    <HelpCircle size={24} className="text-black bg-white rounded-full" />
                   </button>
                 </div>
               </div>
@@ -139,7 +143,10 @@ function App() {
         ) : (
           <div className="max-w-4xl mx-auto w-full space-y-4">
             {messages.map((message, index) => (
-              <ChatMessageComponent key={index} message={message} />
+              <ChatMessageComponent 
+                key={index} 
+                message={message}
+              />
             ))}
             <div ref={messagesEndRef} />
           </div>
@@ -172,7 +179,7 @@ function App() {
                     type="button"
                     className="text-zinc-400 hover:text-white transition-colors"
                   >
-                    <HelpCircle size={24} className="text-black bg-white rounded-full "/>
+                    <HelpCircle size={24} className="text-black bg-white rounded-full" />
                   </button>
                 )}
               </div>

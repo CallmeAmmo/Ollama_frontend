@@ -147,7 +147,6 @@ export function ChatMessage({ message }: ChatMessageProps) {
       {/* Streamed final text */}
       {finalText.length > 0 && (
         <div className="text-white/90 whitespace-pre-wrap ">
-          {/* {finalText.slice(0, displayedFinalLength)} */}
           {finalText.trim().slice(0, displayedFinalLength)}
         </div>
       )}
