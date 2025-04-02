@@ -7,6 +7,7 @@ A lightweight frontend for Ollama's DeepSeek models, featuring real-time streami
 - Node.js (v18 or later)
 - Ollama installed and running locally
 - DeepSeek R1 model pulled in Ollama
+- Change the model version in src/api.ts file as required
 
 ## Setup Instructions
 
